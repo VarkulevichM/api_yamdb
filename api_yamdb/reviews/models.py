@@ -33,7 +33,6 @@ class Title(models.Model):
     )
     category = models.ForeignKey(
         Category,
-        blank=True,
         null=True,
         related_name="title",
         on_delete=models.SET_NULL
