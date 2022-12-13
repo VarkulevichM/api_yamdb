@@ -16,3 +16,7 @@ router.register(
     CommentViewSet,
     basename='comments'
 )
+
+urlpatterns = [
+    path('v1/', include(router.urls)),
+]
