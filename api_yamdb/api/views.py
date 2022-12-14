@@ -1,18 +1,11 @@
+from api.serializers import (CategorySerializer, CommentSerializer,
+                             GenreSerializer, ReviewSerializer,
+                             TitleSerializer, TitleSerializerGET)
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
-from django_filters.rest_framework import DjangoFilterBackend
-
-from reviews.models import Category
-from reviews.models import Genre
-from reviews.models import Title
-from reviews.models import Review
-from api.serializers import CategorySerializer
-from api.serializers import GenreSerializer
-from api.serializers import TitleSerializer
-from api.serializers import TitleSerializerGET
-from api.serializers import CommentSerializer
-from api.serializers import ReviewSerializer
+from reviews.models import Category, Genre, Review, Title
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
