@@ -59,9 +59,8 @@ http://127.0.0.1:8000/redoc/
 ### Технологии:
 - Python 3.7
 - Django 2.2.16
-- djoser 2.1
-- django rest framework
-- Simple JWT
+- django rest framework 3.12.4
+- Simple JWT 5.2.2
 
 Авторы:
 Варкулевич Михаил
