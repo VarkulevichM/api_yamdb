@@ -43,6 +43,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = "api_yamdb.urls"
 
 TEMPLATES_DIR = BASE_DIR / "templates"
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -108,6 +109,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 STATICFILES_DIRS = ((BASE_DIR / "static/"),)
+
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [

@@ -48,7 +48,7 @@ class Title(models.Model):
     )
     genre = models.ManyToManyField(
         Genre,
-        through="TitleGenre"
+        through="GenreTitle"
     )
     category = models.ForeignKey(
         Category,
@@ -61,8 +61,8 @@ class Title(models.Model):
         return self.name
 
 
-class TitleGenre(models.Model):
-    """Связующая модель для поля жанр."""
+class GenreTitle(models.Model):
+    """Связующая модель для поля жанра и произведения."""
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE
@@ -138,5 +138,4 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
-
 
