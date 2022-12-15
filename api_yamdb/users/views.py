@@ -49,7 +49,7 @@ class UserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = (permissions.AllowAny,)
 
     def send_confirmation_code(self, request):
-        """После сохранения пользователя отправляем по почте confirmation_code."""
+        """После сохранения отправляем по почте confirmation_code."""
         email = request.data.get("email")
         confirmation_code = request.data.get("confirmation_code")
         username = request.data.get("confirmation_code")
