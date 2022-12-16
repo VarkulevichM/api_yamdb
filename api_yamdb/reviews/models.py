@@ -10,12 +10,17 @@ class Category(models.Model):
     """Модель категорий."""
 
     name = models.CharField(
-        max_length=256
+        max_length=256,
+        verbose_name="Категория"
     )
     slug = models.SlugField(
         max_length=50,
         unique=True
     )
+
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
 
     def __str__(self):
         return self.name
@@ -25,12 +30,17 @@ class Genre(models.Model):
     """Модель жанры."""
 
     name = models.CharField(
-        max_length=256
+        max_length=256,
+        verbose_name="Жанр"
     )
     slug = models.SlugField(
         max_length=50,
         unique=True
     )
+
+    class Meta:
+        verbose_name = "Жанр"
+        verbose_name_plural = "Жанры"
 
     def __str__(self):
         return self.name
@@ -39,15 +49,18 @@ class Genre(models.Model):
 class Title(models.Model):
     """Модель произведений."""
     name = models.CharField(
-        max_length=256
+        max_length=256,
+        verbose_name="Произведение"
     )
     year = models.IntegerField()
     description = models.TextField(
+        verbose_name="Описание",
         blank=True,
         null=True
     )
     genre = models.ManyToManyField(
         Genre,
+        verbose_name="Жанр",
         through="GenreTitle"
     )
     category = models.ForeignKey(
@@ -57,6 +70,10 @@ class Title(models.Model):
         on_delete=models.SET_NULL
     )
 
+    class Meta:
+        verbose_name = "Произведение"
+        verbose_name_plural = "Произведения"
+
     def __str__(self):
         return self.name
 
@@ -65,10 +82,12 @@ class GenreTitle(models.Model):
     """Связующая модель для поля жанра и произведения."""
     title = models.ForeignKey(
         Title,
+        verbose_name="Произведение",
         on_delete=models.CASCADE
     )
     genre = models.ForeignKey(
         Genre,
+        verbose_name="Жанр",
         on_delete=models.CASCADE
     )
 
