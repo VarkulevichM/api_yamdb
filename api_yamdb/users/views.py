@@ -1,13 +1,13 @@
-from rest_framework import mixins, viewsets
-from .models import User
-from .serializers import UserSerializer, UsersByAdminSerializer
-from rest_framework import permissions
-from rest_framework.decorators import api_view, permission_classes, action
+from django.shortcuts import get_object_or_404
+from rest_framework import mixins, permissions, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.pagination import LimitOffsetPagination
+
+from .models import User
+from .serializers import UsersByAdminSerializer, UserSerializer
 
 
 class UserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
