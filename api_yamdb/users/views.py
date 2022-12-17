@@ -1,15 +1,20 @@
-from rest_framework import mixins, viewsets, status
-from .models import User
-from .serializers import UserSerializer, UsersByAdminSerializer
+from django.core.mail import EmailMessage
+from django.shortcuts import get_object_or_404
+from rest_framework import filters
+from rest_framework import mixins
 from rest_framework import permissions
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status
+from rest_framework import viewsets
+from rest_framework.decorators import api_view
+from rest_framework.decorators import permission_classes
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.pagination import LimitOffsetPagination
-from django.core.mail import EmailMessage
-from rest_framework import filters
+
+from .models import User
 from .permissions import RoleAdmin
-from django.shortcuts import get_object_or_404
+from .serializers import UserSerializer
+from .serializers import UsersByAdminSerializer
 
 
 class MeViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
