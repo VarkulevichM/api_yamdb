@@ -39,7 +39,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    rewiew = serializers.SlugRelatedField(
+    review = serializers.SlugRelatedField(
         slug_field='text',
         read_only=True
     )
@@ -51,9 +51,6 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
-
-    def create(self, validated_data):
-        return Comment.objects.create()
         
 
 class CategorySerializer(serializers.ModelSerializer):
