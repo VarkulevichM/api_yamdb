@@ -7,6 +7,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from api.filters import TitlesFilter
 from api.permissions import AdminOrReadOnly
+from api.permissions import AdminModeratorAuthorOrReadOnly
 from api.serializers import CategorySerializer
 from api.serializers import CommentSerializer
 from api.serializers import GenreSerializer
@@ -17,11 +18,11 @@ from reviews.models import Category
 from reviews.models import Genre
 from reviews.models import Review
 from reviews.models import Title
-
+from django.db.models import Avg
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = [] # пока ничего, надо согласовать пермишны
+    permission_classes = (AdminModeratorAuthorOrReadOnly,)
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
@@ -29,8 +30,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
             Title,
             id=self.kwargs.get('title_id')
         )
-        return title.rewiews.all()
-    
+        return title.reviews.all()
+
     def perform_create(self, serializer):
         title = get_object_or_404(
             Title,
@@ -40,20 +41,21 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [] # пока ничего, надо согласовать пермишны
+    permission_classes = (AdminModeratorAuthorOrReadOnly,)
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
         rewiew = get_object_or_404(
             Review,
-            id=self.kwargs.get('rewiew_id')
+            id=self.kwargs.get('review_id')
         )
-        return rewiew.comments.all()
+
+        return rewiew.comments.all().order_by("id")
 
     def perform_create(self, serializer):
         rewiew = get_object_or_404(
             Review,
-            id=self.kwargs.get('rewiew_id')
+            id=self.kwargs.get('review_id')
         )
         serializer.save(author=self.request.user, rewiew=rewiew)
 
@@ -93,7 +95,9 @@ class GenreViewSet(
 class TitleViewSet(viewsets.ModelViewSet):
     """Вьюсет создания обьектов модели Title"""
 
-    queryset = Title.objects.all().order_by("id")
+    queryset = Title.objects.annotate(rating=Avg("reviews__score")
+                                      ).order_by("id")
+    print(queryset)
     permission_classes = (AdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter
