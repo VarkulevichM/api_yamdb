@@ -2,7 +2,14 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from reviews.models import Category, Comment, Genre, Review, Title
+
+from reviews.models import Category
+from reviews.models import Genre
+from reviews.models import Title
+from reviews.models import Comment
+from reviews.models import Review
+
+import datetime as dt
 
 User = get_user_model()
 
@@ -51,7 +58,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
-        
+
 
 class CategorySerializer(serializers.ModelSerializer):
     """Сериализатор для модели Category."""
@@ -71,42 +78,29 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class TitleSerializerGET(serializers.ModelSerializer):
     """Сериализатор для модели Title при GET запросе."""
+
     genre = GenreSerializer(many=True, read_only=True)
     category = CategorySerializer(read_only=True)
     rating = serializers.IntegerField(required=False)
 
     class Meta:
         model = Title
-        fields = (
-            "id",
-            "name",
-            "year",
-            "rating",
-            "description",
-            "genre",
-            "category"
-        )
-        read_only_fields = ("__all__",)
+        fields = "__all__"
 
 
 class TitleSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Title при остальных запросах."""
-    genre = serializers.SlugRelatedField(
-        many=True,
-        slug_field="slug",
-        queryset=Genre.objects.all()
-    )
+
     category = serializers.SlugRelatedField(
         queryset=Category.objects.all(),
         slug_field="slug"
     )
+    genre = serializers.SlugRelatedField(
+        queryset=Genre.objects.all(),
+        slug_field="slug",
+        many=True
+    )
 
     class Meta:
         model = Title
-        fields = (
-            "name",
-            "year",
-            "description",
-            "genre",
-            "category"
-        )
+        fields = "__all__"

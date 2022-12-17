@@ -2,8 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 import uuid
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save
-from django.core.mail import EmailMessage
+from django.db.models.signals import pre_save
 
 
 class User(AbstractUser):
@@ -16,6 +15,9 @@ class User(AbstractUser):
     )
     confirmation_code = models.UUIDField(unique=True, default=uuid.uuid4)
 
+    class Meta(object):
+        unique_together = ("email",)
+
 
 @receiver(pre_save, sender=User)
 def staff2admin(sender, **kwargs):
@@ -24,17 +26,3 @@ def staff2admin(sender, **kwargs):
     if user:
         if user.is_staff:
             user.role = "admin"
-
-
-@receiver(post_save, sender=User)
-def after_create_user(sender, **kwargs):
-    """После сохранения пользователя отправляем по почте confirmation_code."""
-    user = kwargs.get("instance")
-    if user:
-        email = EmailMessage(
-            f"confirmation_code for user {user.username}",
-            str(user.confirmation_code),
-            user.email,
-            [user.email],
-        )
-        email.send()
