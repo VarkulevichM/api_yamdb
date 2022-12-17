@@ -2,6 +2,7 @@ from rest_framework import permissions
 
 
 class AdminOrReadOnly(permissions.BasePermission):
+    """Разрешения для TitleViewSet, GenreViewSet, CategoryViewSet"""
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS
                 or (request.user.is_authenticated and (
@@ -11,6 +12,7 @@ class AdminOrReadOnly(permissions.BasePermission):
 
 
 class AdminModeratorAuthorOrReadOnly(permissions.BasePermission):
+    """Разрешения для CommentViewSet,ReviewViewSet"""
     def has_object_permission(self, request, view, obj):
         return (request.method in permissions.SAFE_METHODS
                 or request.user.role == "admin"
