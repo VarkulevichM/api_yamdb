@@ -1,16 +1,23 @@
-from api.filters import TitlesFilter
-from api.permissions import AdminModeratorAuthorOrReadOnly, AdminOrReadOnly
-from api.serializers import (CategorySerializer, CommentSerializer,
-                             GenreSerializer, ReviewSerializer,
-                             TitleSerializer, TitleSerializerGET)
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status, viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
-from reviews.models import Category, Comment, Genre, Review, Title
+
+from api.filters import TitlesFilter
+from api.permissions import AdminModeratorAuthorOrReadOnly
+from api.permissions import AdminOrReadOnly
+from api.serializers import CategorySerializer
+from api.serializers import CommentSerializer
+from api.serializers import GenreSerializer
+from api.serializers import ReviewSerializer
+from api.serializers import TitleSerializer
+from api.serializers import TitleSerializerGET
+from reviews.models import Category
+from reviews.models import Genre
+from reviews.models import Review
+from reviews.models import Title
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -37,7 +44,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         review = get_object_or_404(
             Review,
-            id=self.kwargs.get('review_id'),
+            id=self.kwargs.get("review_id")
         )
         return review.comments.all().order_by("id")
 
@@ -55,7 +62,7 @@ class CategoryViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.DestroyModelMixin,
-    viewsets.GenericViewSet
+    viewsets.GenericViewSet,
 ):
     """Вьюсет создания обьектов модели Category"""
 
@@ -71,7 +78,7 @@ class GenreViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.DestroyModelMixin,
-    viewsets.GenericViewSet
+    viewsets.GenericViewSet,
 ):
     """Вьюсет создания обьектов модели Genre"""
 
@@ -87,8 +94,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     """Вьюсет создания обьектов модели Title"""
 
     queryset = Title.objects.annotate(
-        rating=Avg('reviews__score')
-    ).all().order_by("id")
+        rating=Avg("reviews__score")).order_by("id")
     permission_classes = (AdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter

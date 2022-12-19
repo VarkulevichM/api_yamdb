@@ -1,15 +1,14 @@
-from rest_framework import mixins, viewsets, status
-from .models import User
-from .serializers import UserSerializer, UsersByAdminSerializer
-from rest_framework import permissions
-from rest_framework.decorators import api_view, permission_classes
+from django.core.mail import EmailMessage
+from django.shortcuts import get_object_or_404
+from rest_framework import filters, mixins, permissions, status, viewsets
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.pagination import LimitOffsetPagination
-from django.core.mail import EmailMessage
-from rest_framework import filters
+
+from .models import User
 from .permissions import RoleAdmin
-from django.shortcuts import get_object_or_404
+from .serializers import UserSerializer
+from .serializers import UsersByAdminSerializer
 
 
 class MeViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -34,14 +33,17 @@ class MeViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         )
         if serializer.is_valid():
             serializer.save(role=instance.role)
-            return Response(serializer.validated_data)
+            return Response(
+                UsersByAdminSerializer(instance).data,
+                status=status.HTTP_200_OK,
+            )
         else:
             return Response(
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
 
 
-class UserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+class SignUpViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """Самостоятельная регистрация новых пользователей."""
 
     queryset = User.objects.all()
@@ -92,42 +94,45 @@ class UserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         )
 
 
-@api_view(["POST"])
-@permission_classes([permissions.AllowAny])
-def token(request):
+class TokenViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """Токен."""
-    username = request.data.get("username")
-    if not username:
+
+    queryset = User.objects.all()
+    permission_classes = (permissions.AllowAny,)
+
+    def create(self, request, *args, **kwargs):
+        username = request.data.get("username")
+        if not username:
+            return Response(
+                ["username is required field."],
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        user = User.objects.filter(username=username).first()
+        if not user:
+            return Response(
+                ["incorrect username."],
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        confirmation_code = request.data.get("confirmation_code")
+        if not confirmation_code:
+            return Response(
+                ["confirmation_code is required."],
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        if str(confirmation_code) != str(user.confirmation_code):
+            return Response(
+                ["Incorrect confirmation_code"],
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        refresh = RefreshToken.for_user(user)
         return Response(
-            ["username is required field."],
-            status=status.HTTP_400_BAD_REQUEST,
+            {
+                "token": str(refresh.access_token),
+            }
         )
-    user = User.objects.filter(username=username).first()
-    if not user:
-        return Response(
-            ["incorrect username."],
-            status=status.HTTP_404_NOT_FOUND,
-        )
-    confirmation_code = request.data.get("confirmation_code")
-    if not confirmation_code:
-        return Response(
-            ["confirmation_code is required."],
-            status=status.HTTP_403_FORBIDDEN,
-        )
-    if str(confirmation_code) != str(user.confirmation_code):
-        return Response(
-            ["Incorrect confirmation_code"],
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-    refresh = RefreshToken.for_user(user)
-    return Response(
-        {
-            "token": str(refresh.access_token),
-        }
-    )
 
 
-class UsersByAdminViewSet(viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """Управление пользователями администратором."""
 
     queryset = User.objects.all()
