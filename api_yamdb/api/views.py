@@ -71,7 +71,7 @@ class CategoryViewSet(
 ):
     """Вьюсет создания обьектов модели Category"""
 
-    queryset = Category.objects.all().order_by("id")
+    queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (AdminOrReadOnly,)
     filter_backends = (SearchFilter,)
@@ -87,7 +87,7 @@ class GenreViewSet(
 ):
     """Вьюсет создания обьектов модели Genre"""
 
-    queryset = Genre.objects.all().order_by("id")
+    queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (AdminOrReadOnly,)
     filter_backends = (SearchFilter,)

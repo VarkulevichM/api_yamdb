@@ -73,8 +73,8 @@ class GenreSerializer(serializers.ModelSerializer):
 class TitleSerializerGET(serializers.ModelSerializer):
     """Сериализатор для модели Title при GET запросе."""
 
-    genre = GenreSerializer(many=True, read_only=True)
-    category = CategorySerializer(read_only=True)
+    genre = GenreSerializer(Genre.objects.all(), many=True)
+    category = CategorySerializer(Category.objects.all())
     rating = serializers.IntegerField(required=False)
 
     class Meta:
