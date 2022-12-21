@@ -5,6 +5,7 @@ from reviews.models import Title
 class TitlesFilter(django_filters.FilterSet):
     """Фильтр для эндпоинта /api/v1/titles/ который даёт возможность
     фильтровать по slug полю, имени и году"""
+
     category = django_filters.CharFilter(
         field_name="category__slug",
         lookup_expr="contains"
@@ -18,14 +19,10 @@ class TitlesFilter(django_filters.FilterSet):
         lookup_expr="contains"
     )
     year = django_filters.NumberFilter(
-        field_name="year"
+        field_name="year",
+        lookup_expr="contains"
     )
 
     class Meta:
         model = Title
-        fields = (
-            "name",
-            "genre",
-            "category",
-            "year"
-        )
+        fields = "__all__"

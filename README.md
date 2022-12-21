@@ -14,7 +14,7 @@ git@github.com:VarkulevichM/api_yamdb.git
 ```
 cd api_yambd
 ```
-оздать и активировать виртуальное окружение:
+Создать и активировать виртуальное окружение:
 (для Windows везде использовать python а не python3)
 ```
 python3 -m venv env 
@@ -36,6 +36,18 @@ python3 manage.py migrate
 Запустить проект:
 ```
 python3 manage.py runserver
+```
+```
+Для того, чтобы заполнить базу, нужно прпоисать данные команды
+запускать надо в таком порядке из директории где находится manage.py
+
+python manage.py importCSVUsers
+python manage.py importCSVCategory
+python manage.py importCSVGenre
+python manage.py importCSVTitels
+python manage.py importCSVGenereTitle
+python manage.py ImportCSVReview
+python manage.py importCSVComments
 ```
 ### Примеры запросов
 Запрос с помощью **POST** метода на страницу: http://127.0.0.1:8000/api/v1/auth/signup/
