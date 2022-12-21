@@ -22,6 +22,10 @@ class User(AbstractUser):
         default=uuid.uuid4
     )
 
+    @property
+    def is_admin(self):
+        return self.role == 'admin' or self.is_staff or self.is_superuser
+
     class Meta(object):
         unique_together = ("email",)
 
