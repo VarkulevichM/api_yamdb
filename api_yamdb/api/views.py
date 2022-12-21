@@ -4,6 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status, viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 from api.filters import TitlesFilter
 from api.permissions import AdminModeratorAuthorOrReadOnly
@@ -39,7 +40,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = (AdminModeratorAuthorOrReadOnly,)
     pagination_class = PageNumberPagination
     filter_backends = (SearchFilter,)
-    search_fields = ('title_id',)
+    search_fields = ("title_id",)
 
     def get_queryset(self):
         review = get_object_or_404(
@@ -53,7 +54,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         review = get_object_or_404(Review, id=review_id)
         serializer.save(
             author=self.request.user,
-            review=review
+            rewiew=review
         )
         return Response(status=status.HTTP_201_CREATED)
 
