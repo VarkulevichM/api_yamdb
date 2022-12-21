@@ -3,8 +3,8 @@ import csv
 from django.core.management import BaseCommand
 
 from reviews.models import Comment
-from reviews.models import User
 from reviews.models import Review
+from reviews.models import User
 
 
 class Command(BaseCommand):
@@ -34,4 +34,3 @@ class Command(BaseCommand):
                 print("Загрузка comments.csv успешна завершена!")
         except FileNotFoundError:
             print("comments.csv не найден")
-

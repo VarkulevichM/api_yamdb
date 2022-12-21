@@ -2,9 +2,9 @@ import csv
 
 from django.core.management import BaseCommand
 
+from reviews.models import Review
 from reviews.models import Title
 from reviews.models import User
-from reviews.models import Review
 
 
 class Command(BaseCommand):
@@ -35,4 +35,3 @@ class Command(BaseCommand):
                 print("Загрузка review.csv успешна завершена!")
         except FileNotFoundError:
             print("review.csv не найден")
-

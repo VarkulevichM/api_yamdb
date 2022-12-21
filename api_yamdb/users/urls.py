@@ -1,11 +1,8 @@
-from django.urls import include
-from django.urls import path
+from django.urls import path, include
+from .views import UserViewSet, token, UsersByAdminViewSet, MeViewSet
 from rest_framework import routers
 
-from .views import MeViewSet
-from .views import UserViewSet
-from .views import UsersByAdminViewSet
-from .views import token
+from .views import UsersByAdminViewSet, UserViewSet, token
 
 user_create = UserViewSet.as_view({"post": "create"})
 by_username = UsersByAdminViewSet.as_view(

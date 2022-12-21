@@ -90,11 +90,11 @@ class GenreTitle(models.Model):
         verbose_name="Произведение",
         on_delete=models.CASCADE
     )
-    genre = models.ForeignKey\
-        (Genre,
-         verbose_name="Жанр",
-         on_delete=models.CASCADE
-         )
+    genre = models.ForeignKey(
+        Genre,
+        verbose_name="Жанр",
+        on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return f"{self.title} {self.genre}"
